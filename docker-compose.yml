@@ -15,7 +15,7 @@ services:
       - '8080:80'
     volumes:
       - ./code/frontend/build:/var/www/htmlp
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - node
       - mysql
