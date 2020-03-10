@@ -18,8 +18,6 @@ app.use('/todo', auth.verifyToken, todos);
 app.use('/login', login);
 app.use('/signup', signup);
 
-console.log('yeah22');
-
 sequelize
   .sync()
   .then(result =>
