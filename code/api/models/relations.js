@@ -1,7 +1,7 @@
 const User = require('./user');
 const Todo = require('./todo');
 const Tag = require('./tag');
-
+const TodoTag = require('./todo_tags');
 Todo.belongsTo(User, {
   foreignKey: {
     allowNull: false
@@ -22,5 +22,7 @@ Tag.belongsTo(User, {
 });
 User.hasMany(Tag);
 
-Tag.belongsToMany(Todo, { through: 'todo_tags' });
-Todo.belongsToMany(Tag, { through: 'todo_tags' });
+Tag.belongsToMany(Todo, {
+  through: TodoTag
+});
+Todo.belongsToMany(Tag, { through: TodoTag });

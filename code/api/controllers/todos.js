@@ -1,9 +1,10 @@
 const Todo = require('../models/todo');
+const Tag = require('../models/tag');
+const TodoTag = require('../models/todo_tags');
 
 exports.getTodos = (req, res) => {
   const { user } = req;
-  user
-    .getTodos()
+  Todo.findAll({ include: Tag, where: { userId: user.id } })
     .then(results => {
       res.send(results);
     })
@@ -14,11 +15,15 @@ exports.getTodos = (req, res) => {
 };
 
 exports.createTodo = (req, res) => {
-  const { title, description, dueDate } = req.body;
+  const { title, description, dueDate, tagId } = req.body;
   const { user } = req;
   user
     .createTodo({ title, description, dueDate })
-    .then(() => res.status(200).json({ message: 'successfully added todo' }))
+    .then(({ dataValues }) => {
+      TodoTag.create({ tagId, todoId: dataValues.id })
+        .then(() => res.status(200).json({ message: 'successfully added todo' }))
+        .catch(err => res.status(500).send({ message: err }));
+    })
     .catch(err => {
       res.status(500).send({ message: err });
       console.log(err);
