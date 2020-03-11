@@ -66,9 +66,11 @@ exports.deleteTodo = (req, res) => {
 
 exports.completeTodo = (req, res) => {
   const { isCompleted } = req.body;
-  const objTodoProp = { isCompleted, completeDate };
+  const completedDate = new Date().toISOString().split('T')[0];
+  const objTodoProp = { isCompleted, completedDate };
   Todo.update(objTodoProp, { where: { id: req.params.id } })
     .then(results => {
+      console.log(results);
       results[0] ? res.send({ message: 'Todo successfully completed' }) : res.send({ message: 'todo not found' });
     })
     .catch(err => {
