@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 verifyToken = (req, res, next) => {
   const bearerHeader = req.headers['authorization'];
@@ -6,7 +7,16 @@ verifyToken = (req, res, next) => {
     const token = bearerHeader.split(' ')[1];
     jwt.verify(token, process.env.TOKEN_SECRET, (err, authData) => {
       err && res.status(403).end();
-      next();
+      User.findOne({
+        where: {
+          email: authData.email
+        }
+      })
+        .then(user => {
+          req.user = user;
+          next();
+        })
+        .catch(err => res.sendStatus(403));
     });
   } else {
     res.sendStatus(403);

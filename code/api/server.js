@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const sequelize = require('./config/database');
+require('./models/relations');
 
 const todos = require('./routes/todos');
 const login = require('./routes/login');
@@ -20,7 +21,7 @@ app.use('/signup', signup);
 
 sequelize
   .sync()
-  .then(result =>
+  .then(() =>
     app.listen(process.env.PORT || 9000, () => {
       console.log(`listening on port ${process.env.PORT}`);
     })
