@@ -1,4 +1,4 @@
-FROM node:10-stretch
+FROM node:12-stretch
 
 RUN npm install pm2 -g && npm install nodemon -g
 WORKDIR /usr/src/app

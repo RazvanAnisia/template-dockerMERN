@@ -1,7 +1,7 @@
 const User = require('./user');
 const Todo = require('./todo');
 const Tag = require('./tag');
-const TodoTag = require('./todo_tags');
+const TodoTag = require('./todoTags');
 Todo.belongsTo(User, {
   foreignKey: {
     allowNull: false

@@ -1,11 +1,12 @@
 const Sequelize = require('sequelize').Sequelize;
+const DataTypes = require('sequelize').DataTypes;
 const sequelize = require('../config/database');
 
 const Todo = sequelize.define('todo', {
   id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV1,
+    primaryKey: true
   },
   title: {
     type: Sequelize.STRING,

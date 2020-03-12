@@ -1,10 +1,11 @@
 const Todo = require('../models/todo');
 const Tag = require('../models/tag');
-const TodoTag = require('../models/todo_tags');
+const TodoTag = require('../models/todoTags');
 
 exports.getTodos = (req, res) => {
   const { user } = req;
-  Todo.findAll({ include: Tag, where: { userId: user.id } })
+  user
+    .getTodos({ include: Tag })
     .then(results => {
       res.send(results);
     })
@@ -15,12 +16,13 @@ exports.getTodos = (req, res) => {
 };
 
 exports.createTodo = (req, res) => {
-  const { title, description, dueDate, tagId } = req.body;
+  const { title, description, dueDate, tagIds } = req.body;
   const { user } = req;
   user
     .createTodo({ title, description, dueDate })
-    .then(({ dataValues }) => {
-      TodoTag.create({ tagId, todoId: dataValues.id })
+    .then(todo => {
+      todo
+        .addTag([...tagIds])
         .then(() => res.status(200).json({ message: 'successfully added todo' }))
         .catch(err => res.status(500).send({ message: err }));
     })
@@ -46,16 +48,22 @@ exports.showTodo = (req, res) => {
 };
 
 exports.updateTodo = (req, res) => {
-  const { title, description, dueDate } = req.body;
+  const { title, description, dueDate, tagIds } = req.body;
   const objTodoProp = { title, description, dueDate };
-  Todo.update(objTodoProp, { where: { id: req.params.id } })
-    .then(results => {
-      results[0] ? res.send({ message: 'Todo successfully updated' }) : res.send({ message: 'todo not found' });
-    })
-    .catch(err => {
-      res.status(500).send({ mesage: err });
-      console.log(err);
-    });
+  Todo.findOne({ where: { id: req.params.id } }).then(todo =>
+    todo
+      .update(objTodoProp)
+      .then(todo => {
+        todo
+          .setTags([...tagIds])
+          .then(() => res.status(200).json({ message: 'successfully added todo' }))
+          .catch(err => res.status(500).send({ message: err }));
+      })
+      .catch(err => {
+        res.status(500).send({ mesage: err });
+        console.log(err);
+      })
+  );
 };
 
 exports.deleteTodo = (req, res) => {
@@ -79,7 +87,6 @@ exports.completeTodo = (req, res) => {
   const objTodoProp = { isCompleted, completedDate };
   Todo.update(objTodoProp, { where: { id: req.params.id } })
     .then(results => {
-      console.log(results);
       results[0] ? res.send({ message: 'Todo successfully completed' }) : res.send({ message: 'todo not found' });
     })
     .catch(err => {

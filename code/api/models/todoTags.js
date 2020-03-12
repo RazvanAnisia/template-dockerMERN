@@ -2,20 +2,13 @@ const Sequelize = require('sequelize').Sequelize;
 const sequelize = require('../config/database');
 const DataTypes = require('sequelize').DataTypes;
 
-const Tag = sequelize.define('tag', {
+const TodoTag = sequelize.define('todo_tags', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV1,
-    primaryKey: true
-  },
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  color: {
-    type: Sequelize.STRING,
+    primaryKey: true,
     allowNull: false
   }
 });
 
-module.exports = Tag;
+module.exports = TodoTag;
