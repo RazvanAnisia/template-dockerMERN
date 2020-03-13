@@ -23,7 +23,7 @@ app.use('/signup', signup);
 
 sequelize
   .sync()
-  //.sync({ force: true })
+  // .sync({ force: true })
   .then(() =>
     app.listen(process.env.PORT || 9000, () => {
       console.log(`listening on port ${process.env.PORT}`);

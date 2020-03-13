@@ -21,10 +21,11 @@ exports.createTodo = (req, res) => {
   user
     .createTodo({ title, description, dueDate })
     .then(todo => {
-      todo
-        .addTag([...tagIds])
-        .then(() => res.status(200).json({ message: 'successfully added todo' }))
-        .catch(err => res.status(500).send({ message: err }));
+      tagIds &&
+        todo
+          .addTag([...tagIds])
+          .then(() => res.status(200).json({ message: 'successfully added todo' }))
+          .catch(err => res.status(500).send({ message: err }));
     })
     .catch(err => {
       res.status(500).send({ message: err });

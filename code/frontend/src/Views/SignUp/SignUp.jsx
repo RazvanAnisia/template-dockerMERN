@@ -16,12 +16,11 @@ class SignUp extends Component {
     e.preventDefault();
     axiosInstance
       .post('/signup', {
-        firstname: this.state.strFirstName,
-        lastname: this.state.strLastName,
+        firstName: this.state.strFirstName,
+        lastName: this.state.strLastName,
         email: this.state.strEmail,
         password: this.state.strPassword,
-        profession: this.state.strProfession,
-        registeredDate: this.state.strRegisteredDate
+        profession: this.state.strProfession
       })
       .then(({ data }) => {
         const { token } = data;
@@ -76,41 +75,25 @@ class SignUp extends Component {
     }
   };
   render() {
-    const {
-      strFirstName,
-      strLastName,
-      strProfession,
-      strEmail,
-      strPassword
-    } = this.state;
+    const { strFirstName, strLastName, strProfession, strEmail, strPassword } = this.state;
     return (
       <>
         <h1>Sign Up to our TodoApp</h1>
         <form>
           <label>First Name</label>
-          <input
-            onChange={e => this.handleChange(e.target.value, 'firstName')}
-            value={strFirstName}></input>
+          <input onChange={e => this.handleChange(e.target.value, 'firstName')} value={strFirstName}></input>
           <br />
           <label>Last Name</label>
-          <input
-            onChange={e => this.handleChange(e.target.value, 'lastName')}
-            value={strLastName}></input>
+          <input onChange={e => this.handleChange(e.target.value, 'lastName')} value={strLastName}></input>
           <br />
           <label>Profession</label>
-          <input
-            onChange={e => this.handleChange(e.target.value, 'profession')}
-            value={strProfession}></input>
+          <input onChange={e => this.handleChange(e.target.value, 'profession')} value={strProfession}></input>
           <br />
           <label>Email</label>
-          <input
-            onChange={e => this.handleChange(e.target.value, 'email')}
-            value={strEmail}></input>
+          <input onChange={e => this.handleChange(e.target.value, 'email')} value={strEmail}></input>
           <br />
           <label>Password</label>
-          <input
-            onChange={e => this.handleChange(e.target.value, 'password')}
-            value={strPassword}></input>
+          <input onChange={e => this.handleChange(e.target.value, 'password')} value={strPassword}></input>
           <br />
           <button onClick={this.handleSubmit}>Submit</button>
         </form>
