@@ -9,6 +9,7 @@ const todos = require('./routes/todos');
 const todolist = require('./routes/todolist');
 const login = require('./routes/login');
 const signup = require('./routes/signup');
+const user = require('./routes/user');
 const tags = require('./routes/tags');
 const auth = require('./middleware/auth');
 const authorization = require('./middleware/authorization');
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/todo', auth.verifyToken, authorization.verifyUser, todos);
 app.use('/todolist', auth.verifyToken, authorization.verifyUser, todolist);
 app.use('/tag', auth.verifyToken, authorization.verifyUser, tags);
+app.use('/user', auth.verifyToken, authorization.verifyUser, user);
 app.use('/login', login);
 app.use('/signup', signup);
 
