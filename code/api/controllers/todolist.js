@@ -1,10 +1,18 @@
 const Todo = require('../models/todo');
 const TodoList = require('../models/todolist');
+const Tags = require('../models/tag');
 
 exports.getTodoLists = (req, res) => {
   const { user } = req;
   user
-    .getTodoLists({ include: Todo })
+    .getTodoLists({
+      include: [
+        {
+          model: Todo,
+          include: [Tags]
+        }
+      ]
+    })
     .then(results => {
       res.send(results);
     })
