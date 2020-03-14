@@ -6,6 +6,7 @@ const sequelize = require('./config/database');
 require('./models/relations');
 
 const todos = require('./routes/todos');
+const todolist = require('./routes/todolist');
 const login = require('./routes/login');
 const signup = require('./routes/signup');
 const tags = require('./routes/tags');
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/todo', auth.verifyToken, authorization.verifyUser, todos);
+app.use('/todolist', auth.verifyToken, authorization.verifyUser, todolist);
 app.use('/tag', auth.verifyToken, authorization.verifyUser, tags);
 app.use('/login', login);
 app.use('/signup', signup);

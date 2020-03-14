@@ -4,11 +4,11 @@ const User = require('../models/user');
 const saltRounds = 10;
 
 exports.createUser = (req, res) => {
-  const { firstName, lastName, email, password, profession } = req.body;
+  const { firstName, lastName, email, password, userName } = req.body;
   bcrypt
     .hash(password, saltRounds)
     .then(hash => {
-      User.create({ firstName, lastName, email, password: hash, profession })
+      User.create({ firstName, lastName, email, password: hash, userName })
         .then(results => {
           jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: '10h' }, (err, token) => {
             res.send({ token });

@@ -6,7 +6,7 @@ class SignUp extends Component {
   state = {
     strFirstName: '',
     strLastName: '',
-    strProfession: '',
+    struserName: '',
     strEmail: '',
     strPassword: '',
     strRegisteredDate: formatDate(new Date())
@@ -20,7 +20,7 @@ class SignUp extends Component {
         lastName: this.state.strLastName,
         email: this.state.strEmail,
         password: this.state.strPassword,
-        profession: this.state.strProfession
+        userName: this.state.struserName
       })
       .then(({ data }) => {
         const { token } = data;
@@ -37,7 +37,7 @@ class SignUp extends Component {
     //     lastname: this.state.strLastName,
     //     email: this.state.strEmail,
     //     password: this.state.strPassword,
-    //     profession: this.state.strProfession,
+    //     userName: this.state.struserName,
     //     registeredDate: this.state.strRegisteredDate
     //   })
     // });
@@ -54,9 +54,9 @@ class SignUp extends Component {
           strLastName: strInputValue
         });
         break;
-      case 'profession':
+      case 'userName':
         this.setState({
-          strProfession: strInputValue
+          struserName: strInputValue
         });
         break;
       case 'email':
@@ -75,7 +75,7 @@ class SignUp extends Component {
     }
   };
   render() {
-    const { strFirstName, strLastName, strProfession, strEmail, strPassword } = this.state;
+    const { strFirstName, strLastName, struserName, strEmail, strPassword } = this.state;
     return (
       <>
         <h1>Sign Up to our TodoApp</h1>
@@ -86,8 +86,8 @@ class SignUp extends Component {
           <label>Last Name</label>
           <input onChange={e => this.handleChange(e.target.value, 'lastName')} value={strLastName}></input>
           <br />
-          <label>Profession</label>
-          <input onChange={e => this.handleChange(e.target.value, 'profession')} value={strProfession}></input>
+          <label>userName</label>
+          <input onChange={e => this.handleChange(e.target.value, 'userName')} value={struserName}></input>
           <br />
           <label>Email</label>
           <input onChange={e => this.handleChange(e.target.value, 'email')} value={strEmail}></input>
