@@ -123,12 +123,40 @@ exports.getUserDetails = (req, res) => {
 
 exports.deleteUserAccount = (req, res) => {
   const { locals } = req;
-  User.findOne({ where: { email: locals } })
-    .then(user => {
-      user
-        .destroy()
-        .then(() => res.send({ message: 'successfully delete account' }))
-        .catch(err => res.send({ error }));
-    })
-    .catch(err => res.send({ message: err }));
+  const { email, password } = req.body;
+
+  if (locals === email) {
+    User.findOne({ where: { email: locals } })
+      .then(user => {
+        console.log(user);
+        const { dataValues } = user;
+        const { password: strHashedPassword } = dataValues;
+        if (!dataValues) {
+          res.status(HttpStatus.BAD_REQUEST).send({ message: 'user could not be found' });
+        } else {
+          bcrypt
+            .compare(password, strHashedPassword)
+            .then(result => {
+              if (result) {
+                user
+                  .destroy()
+                  .then(() => res.send({ message: 'successfully delete account' }))
+                  .catch(err => res.status(HttpStatus.BAD_REQUEST).send({ message: err }));
+              } else {
+                res.status(HttpStatus.BAD_REQUEST).send({ message: 'password does not match' });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              res.status(HttpStatus.BAD_REQUEST).send({ message: 'password does not match' });
+            });
+        }
+      })
+      .catch(err => {
+        res.status(HttpStatus.BAD_REQUEST).send({ message: err });
+        console.log(err);
+      });
+  } else {
+    res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
+  }
 };

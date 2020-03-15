@@ -8,6 +8,6 @@ router
   .post(UserController.updateUserDetails);
 
 router.route('/stats').get(UserController.getUserStats);
-router.route('/unregister').get(UserController.deleteUserAccount);
+router.route('/unregister').post(UserController.deleteUserAccount);
 
 module.exports = router;
