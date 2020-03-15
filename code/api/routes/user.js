@@ -5,7 +5,7 @@ const UserController = require('../controllers/users');
 router
   .route('/')
   .get(UserController.getUserDetails)
-  .post(UserController.updateUserDetails);
+  .put(UserController.updateUserDetails);
 
 router.route('/stats').get(UserController.getUserStats);
 router.route('/unregister').post(UserController.deleteUserAccount);

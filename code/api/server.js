@@ -10,6 +10,7 @@ const todolist = require('./routes/todolist');
 const login = require('./routes/login');
 const signup = require('./routes/signup');
 const user = require('./routes/user');
+const leaderboard = require('./routes/leaderboard');
 const tags = require('./routes/tags');
 const auth = require('./middleware/auth');
 const authorization = require('./middleware/authorization');
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/todo', auth.verifyToken, authorization.verifyUser, todos);
+app.use('/leaderboard', auth.verifyToken, authorization.verifyUser, leaderboard);
 app.use('/todolist', auth.verifyToken, authorization.verifyUser, todolist);
 app.use('/tag', auth.verifyToken, authorization.verifyUser, tags);
 app.use('/user', auth.verifyToken, authorization.verifyUser, user);

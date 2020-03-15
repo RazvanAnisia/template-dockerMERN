@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+const HttpStatus = require('http-status-codes');
 const User = require('../models/user');
-const saltRounds = 10;
 const Todo = require('../models/todo');
-var moment = require('moment');
-var HttpStatus = require('http-status-codes');
+const TodoList = require('../models/todolist');
+
+const saltRounds = 10;
 
 exports.createUser = (req, res) => {
   const { firstName, lastName, email, password, userName } = req.body;
@@ -78,11 +80,12 @@ exports.getUserStats = (req, res) => {
               return 0;
             })
           );
-          const intTodosCompletedToday = arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints)
-            .length;
-          const intTotalCompletedTodos = arrTotalPoints[0].length;
-          const intTodayPoints = arrTodayPoints[0].reduce((a, b) => a + b, 0);
-          const intTotalPoints = arrTotalPoints[0].reduce((a, b) => a + b, 0);
+          const intTodosCompletedToday =
+            arrTodayPoints.length &&
+            arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints).length;
+          const intTotalCompletedTodos = arrTotalPoints.length && arrTotalPoints[0].length;
+          const intTodayPoints = arrTodayPoints.length && arrTodayPoints[0].reduce((a, b) => a + b, 0);
+          const intTotalPoints = arrTodayPoints.length && arrTotalPoints[0].reduce((a, b) => a + b, 0);
 
           res.status(HttpStatus.OK).send({
             todosCompletedToday: intTodosCompletedToday,
@@ -128,7 +131,6 @@ exports.deleteUserAccount = (req, res) => {
   if (locals === email) {
     User.findOne({ where: { email: locals } })
       .then(user => {
-        console.log(user);
         const { dataValues } = user;
         const { password: strHashedPassword } = dataValues;
         if (!dataValues) {
@@ -159,4 +161,46 @@ exports.deleteUserAccount = (req, res) => {
   } else {
     res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
   }
+};
+
+exports.getLeaderboard = (req, res) => {
+  User.findAll({
+    include: [
+      {
+        model: TodoList,
+        include: [Todo]
+      }
+    ]
+  })
+    .then(arrUsersData => {
+      const arrLeaderboardData = arrUsersData.map(objUser => {
+        objUser.todoLists.map(todolist => todolist.todos.map(todo => todo.points));
+        const arrTotalPoints = objUser.todoLists.map(todolist => todolist.todos.map(todo => todo.points));
+        const arrTodayPoints = objUser.todoLists.map(todolist =>
+          todolist.todos.map(todo => {
+            const today = moment();
+            if (todo.isCompleted && todo.completedDate && today.diff(todo.completedDate, 'days') === 0) {
+              return todo.points;
+            }
+            return 0;
+          })
+        );
+        const intTodosCompletedToday =
+          arrTodayPoints.length &&
+          arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints).length;
+        const intTotalCompletedTodos = arrTotalPoints.length && arrTotalPoints[0].length;
+        const intTodayPoints = arrTodayPoints.length && arrTodayPoints[0].reduce((a, b) => a + b, 0);
+        const intTotalPoints = arrTodayPoints.length && arrTotalPoints[0].reduce((a, b) => a + b, 0);
+        return {
+          username: objUser.userName,
+          todosCompletedToday: intTodosCompletedToday,
+          totalCompletedTodos: intTotalCompletedTodos,
+          todayPoints: intTodayPoints,
+          totalPoints: intTotalPoints
+        };
+      });
+
+      res.send({ leaderboard: arrLeaderboardData });
+    })
+    .catch(err => console.log(err) && res.send({ message: err }));
 };
