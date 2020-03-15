@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const saltRounds = 10;
 const Todo = require('../models/todo');
-const Tags = require('../models/tag');
+var moment = require('moment');
+var HttpStatus = require('http-status-codes');
 
 exports.createUser = (req, res) => {
   const { firstName, lastName, email, password, userName } = req.body;
@@ -17,12 +18,12 @@ exports.createUser = (req, res) => {
           });
         })
         .catch(err => {
-          res.status(400).send({ message: err.errors[0].message });
+          res.status(HttpStatus.BAD_REQUEST).send({ message: err.errors[0].message });
         });
     })
     .catch(err => {
       console.error(err);
-      res.status(400).send({ message: 'something went wrong, cannot create user' });
+      res.status(HttpStatus.BAD_REQUEST).send({ message: 'something went wrong, cannot create user' });
     });
 };
 
@@ -36,7 +37,7 @@ exports.loginUser = (req, res) => {
     .then(({ dataValues }) => {
       const { password: strHashedPassword } = dataValues;
       if (!dataValues) {
-        res.status(400).send({ message: 'wrong credentials' });
+        res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
       } else {
         bcrypt
           .compare(password, strHashedPassword)
@@ -45,7 +46,7 @@ exports.loginUser = (req, res) => {
               ? jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: '10h' }, (err, token) => {
                   res.send({ token });
                 })
-              : res.status(400).send({ message: 'wrong credentials' });
+              : res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
           })
           .catch(err => {
             console.error(err);
@@ -53,7 +54,7 @@ exports.loginUser = (req, res) => {
       }
     })
     .catch(err => {
-      res.status(400).send({ message: 'wrong credentials' });
+      res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
       console.log(err);
     });
 };
@@ -67,9 +68,28 @@ exports.getUserStats = (req, res) => {
           include: Todo
         })
         .then(todolists => {
-          const arrPoints = todolists.map(todolist => todolist.todos.map(todo => todo.points));
-          const points = arrPoints[0].reduce((a, b) => a + b, 0);
-          res.status(200).send({ data: points });
+          const arrTotalPoints = todolists.map(todolist => todolist.todos.map(todo => todo.points));
+          const arrTodayPoints = todolists.map(todolist =>
+            todolist.todos.map(todo => {
+              const today = moment();
+              if (todo.isCompleted && todo.completedDate && today.diff(todo.completedDate, 'days') === 0) {
+                return todo.points;
+              }
+              return 0;
+            })
+          );
+          const intTodosCompletedToday = arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints)
+            .length;
+          const intTotalCompletedTodos = arrTotalPoints[0].length;
+          const intTodayPoints = arrTodayPoints[0].reduce((a, b) => a + b, 0);
+          const intTotalPoints = arrTotalPoints[0].reduce((a, b) => a + b, 0);
+
+          res.status(HttpStatus.OK).send({
+            todosCompletedToday: intTodosCompletedToday,
+            totalCompletedTodos: intTotalCompletedTodos,
+            todayPoints: intTodayPoints,
+            totalPoints: intTotalPoints
+          });
         })
         .catch(err => console.log(err));
     })
@@ -95,7 +115,20 @@ exports.getUserDetails = (req, res) => {
   User.findOne({ where: { email: locals } })
     .then(user => {
       const { email, firstName, lastName, userName } = user;
-      res.send({ message: 'Got user details' });
+      const objUserDetails = { email, firstName, lastName, userName };
+      res.send({ userDetails: objUserDetails });
+    })
+    .catch(err => res.send({ message: err }));
+};
+
+exports.deleteUserAccount = (req, res) => {
+  const { locals } = req;
+  User.findOne({ where: { email: locals } })
+    .then(user => {
+      user
+        .destroy()
+        .then(() => res.send({ message: 'successfully delete account' }))
+        .catch(err => res.send({ error }));
     })
     .catch(err => res.send({ message: err }));
 };
