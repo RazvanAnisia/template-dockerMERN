@@ -48,10 +48,12 @@ services:
     environment:
       DB_HOST: mysql-db
       PORT: 9000
+      SOCKET_PORT: 9008
     env_file:
       - ./config/server/.env
     ports:
       - '9000:9000'
+      - '9008:9008'
     networks:
       - mern
 
@@ -65,6 +67,7 @@ services:
       - ./code/frontend:/usr/src/app
     environment:
       - REACT_APP_BASE_URL=http://localhost:9000
+      - REACT_APP_SOCKET_PORT=http://localhost:9008
     ports:
       - '3000:3000'
     networks:

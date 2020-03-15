@@ -199,6 +199,7 @@ exports.getLeaderboard = (req, res) => {
           totalPoints: intTotalPoints
         };
       });
+      arrLeaderboardData.sort((a, b) => b.totalPoints - a.totalPoints);
 
       res.send({ leaderboard: arrLeaderboardData });
     })

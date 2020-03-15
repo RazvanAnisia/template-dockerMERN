@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import SignUp from './Views/SignUp';
+import socketIOClient from 'socket.io-client';
+
 class App extends Component {
   state = {
     strTodoDescription: '',
     strTitle: '',
-    strDueDate: new Date()
+    strDueDate: new Date(),
+    leaderboard: []
   };
+
+  componentDidMount() {
+    const socket = socketIOClient('http://localhost:9008');
+    socket.on('leaderboard', data => this.setState({ leaderboard: data.leaderboard }));
+  }
+
   handleChange = strValue => {
     this.setState({
       strTodoDescription: strValue
@@ -35,13 +44,30 @@ class App extends Component {
   render() {
     return (
       <>
-        <form>
+        {/* <form>
           <label>name</label>
           <input onChange={e => this.handleTitleChange(e.target.value)} value={this.state.strTodoTitle}></input>
           <input onChange={e => this.handleChange(e.target.value)} value={this.state.strTodoDescription}></input>
           <button onClick={this.handleSubmit}>Submit</button>
         </form>
-        <SignUp />
+        <SignUp /> */}
+        {/* {<p>{JSON.stringify(this.state.leaderboard)}</p>} */}
+        {this.state.leaderboard.length !== 0 &&
+          this.state.leaderboard.map(entry => (
+            <>
+              <div>
+                <strong>{entry.username}</strong>
+              </div>
+              <div>
+                <p>Total</p>
+                <li> Points:{entry.totalPoints}</li>
+                <li> Todos:{entry.totalCompletedTodos}</li>
+                <p>Today</p>
+                <li> Points:{entry.todayPoints}</li>
+                <li> Todos:{entry.todosCompletedToday}</li>
+              </div>
+            </>
+          ))}
       </>
     );
   }
