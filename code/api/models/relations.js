@@ -2,7 +2,10 @@ const User = require('./user');
 const Todo = require('./todo');
 const Tag = require('./tag');
 const TodoTag = require('./todoTags');
-Todo.belongsTo(User, {
+const TodoList = require('./todolist');
+
+User.hasMany(TodoList);
+TodoList.belongsTo(User, {
   foreignKey: {
     allowNull: false
   },
@@ -10,8 +13,18 @@ Todo.belongsTo(User, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-User.hasMany(Todo);
 
+TodoList.hasMany(Todo);
+Todo.belongsTo(TodoList, {
+  foreignKey: {
+    allowNull: false
+  },
+  constraints: true,
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+
+User.hasMany(Tag);
 Tag.belongsTo(User, {
   foreignKey: {
     allowNull: false
@@ -20,9 +33,12 @@ Tag.belongsTo(User, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-User.hasMany(Tag);
 
 Tag.belongsToMany(Todo, {
   through: TodoTag
+  // constraints: false
 });
-Todo.belongsToMany(Tag, { through: TodoTag });
+Todo.belongsToMany(Tag, {
+  through: TodoTag
+  //  constraints: false
+});

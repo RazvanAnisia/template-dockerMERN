@@ -29,6 +29,16 @@ const Todo = sequelize.define('todo', {
   completedDate: {
     type: Sequelize.DATEONLY,
     allowNull: true
+  },
+  priority: {
+    type: DataTypes.ENUM(['low', 'medium', 'high']),
+    allowNull: false,
+    defaultValue: 'low'
+  },
+  points: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1
   }
 });
 

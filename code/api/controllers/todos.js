@@ -1,9 +1,10 @@
 const Todo = require('../models/todo');
 const Tag = require('../models/tag');
 const TodoTag = require('../models/todoTags');
+const TodoList = require('../models/todolist');
 
 exports.getTodos = (req, res) => {
-  const { user } = req;
+  const { user } = req.body;
   user
     .getTodos({ include: Tag })
     .then(results => {
@@ -16,21 +17,24 @@ exports.getTodos = (req, res) => {
 };
 
 exports.createTodo = (req, res) => {
-  const { title, description, dueDate, tagIds } = req.body;
-  const { user } = req;
-  user
-    .createTodo({ title, description, dueDate })
-    .then(todo => {
-      tagIds &&
-        todo
-          .addTag([...tagIds])
-          .then(() => res.status(200).json({ message: 'successfully added todo' }))
-          .catch(err => res.status(500).send({ message: err }));
-    })
-    .catch(err => {
-      res.status(500).send({ message: err });
-      console.log(err);
-    });
+  const { title, description, dueDate, tagIds, priority, points, todolistId } = req.body;
+  const objTodo = { title, description, dueDate, tagIds, priority, points, todolistId };
+
+  TodoList.findOne({ where: { id: todolistId } }).then(todolist =>
+    todolist
+      .createTodo(objTodo)
+      .then(todo => {
+        tagIds &&
+          todo
+            .addTag([...tagIds])
+            .then(() => res.status(200).json({ message: 'successfully added todo' }))
+            .catch(err => res.status(500).send({ message: err }));
+      })
+      .catch(err => {
+        res.status(500).send({ message: err });
+        console.log(err);
+      })
+  );
 };
 
 exports.showTodo = (req, res) => {
@@ -49,11 +53,11 @@ exports.showTodo = (req, res) => {
 };
 
 exports.updateTodo = (req, res) => {
-  const { title, description, dueDate, tagIds } = req.body;
-  const objTodoProp = { title, description, dueDate };
+  const { title, description, dueDate, tagIds, priority, points, todolistId } = req.body;
+  const objTodo = { title, description, dueDate, tagIds, priority, points, todolistId };
   Todo.findOne({ where: { id: req.params.id } }).then(todo =>
     todo
-      .update(objTodoProp)
+      .update(objTodo)
       .then(todo => {
         todo
           .setTags([...tagIds])
