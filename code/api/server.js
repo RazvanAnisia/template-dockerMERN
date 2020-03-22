@@ -49,7 +49,7 @@ sequelize
 const getLeaderboard = async socket => {
   try {
     const res = await axios.get('http://localhost:9000/leaderboard');
-    console.log('emitting leaderboard', res);
+    // console.log('emitting leaderboard', res);
     socket.emit('leaderboard', res.data);
   } catch (error) {
     console.error(`Error: ${error}`);

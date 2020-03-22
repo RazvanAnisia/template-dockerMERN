@@ -27,8 +27,9 @@ exports.createTodo = (req, res) => {
         tagIds &&
           todo
             .addTag([...tagIds])
-            .then(() => res.status(200).json({ message: 'successfully added todo' }))
+            .then(() => res.status(200).send({ message: 'successfully added todo' }))
             .catch(err => res.status(500).send({ message: err }));
+        return res.status(200).send({ message: 'successfully added todo' });
       })
       .catch(err => {
         res.status(500).send({ message: err });

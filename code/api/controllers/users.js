@@ -175,7 +175,10 @@ exports.getLeaderboard = (req, res) => {
     .then(arrUsersData => {
       const arrLeaderboardData = arrUsersData.map(objUser => {
         objUser.todoLists.map(todolist => todolist.todos.map(todo => todo.points));
-        const arrTotalPoints = objUser.todoLists.map(todolist => todolist.todos.map(todo => todo.points));
+        const arrTotalPoints = objUser.todoLists.map(todolist =>
+          todolist.todos.map(todo => todo.isCompleted !== null && todo.points)
+        );
+        console.log(arrTotalPoints);
         const arrTodayPoints = objUser.todoLists.map(todolist =>
           todolist.todos.map(todo => {
             const today = moment();
