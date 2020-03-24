@@ -29,7 +29,9 @@ exports.updateTag = (req, res) => {
   const { name, color } = req.body;
   Tag.update({ name, color }, { where: { id: req.params.id } })
     .then(results => {
-      results[0] ? res.send({ message: 'Tag successfully updated' }) : res.send({ message: 'Tag not found' });
+      results[0]
+        ? res.send({ message: 'Tag successfully updated' })
+        : res.send({ message: 'Tag not found' });
     })
     .catch(err => {
       res.status(500).send({ mesage: err });
@@ -44,7 +46,9 @@ exports.deleteTag = (req, res) => {
     }
   })
     .then(results => {
-      results ? res.send({ message: 'Tag successfully deleted' }) : res.status(500).send({ mesage: 'Tag not found' });
+      results
+        ? res.send({ message: 'Tag successfully deleted' })
+        : res.status(500).send({ mesage: 'Tag not found' });
     })
     .catch(err => {
       res.status(500).send({ mesage: err });

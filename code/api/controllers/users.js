@@ -15,17 +15,26 @@ exports.createUser = (req, res) => {
     .then(hash => {
       User.create({ firstName, lastName, email, password: hash, userName })
         .then(results => {
-          jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: '10h' }, (err, token) => {
-            res.send({ token });
-          });
+          jwt.sign(
+            { email },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '10h' },
+            (err, token) => {
+              res.send({ token });
+            }
+          );
         })
         .catch(err => {
-          res.status(HttpStatus.BAD_REQUEST).send({ message: err.errors[0].message });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .send({ message: err.errors[0].message });
         });
     })
     .catch(err => {
       console.error(err);
-      res.status(HttpStatus.BAD_REQUEST).send({ message: 'something went wrong, cannot create user' });
+      res
+        .status(HttpStatus.BAD_REQUEST)
+        .send({ message: 'something went wrong, cannot create user' });
     });
 };
 
@@ -39,16 +48,25 @@ exports.loginUser = (req, res) => {
     .then(({ dataValues }) => {
       const { password: strHashedPassword } = dataValues;
       if (!dataValues) {
-        res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .send({ message: 'wrong credentials' });
       } else {
         bcrypt
           .compare(password, strHashedPassword)
           .then(result => {
             result
-              ? jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: '10h' }, (err, token) => {
-                  res.send({ token });
-                })
-              : res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
+              ? jwt.sign(
+                  { email },
+                  process.env.TOKEN_SECRET,
+                  { expiresIn: '10h' },
+                  (err, token) => {
+                    res.send({ token });
+                  }
+                )
+              : res
+                  .status(HttpStatus.BAD_REQUEST)
+                  .send({ message: 'wrong credentials' });
           })
           .catch(err => {
             console.error(err);
@@ -70,11 +88,17 @@ exports.getUserStats = (req, res) => {
           include: Todo
         })
         .then(todolists => {
-          const arrTotalPoints = todolists.map(todolist => todolist.todos.map(todo => todo.points));
+          const arrTotalPoints = todolists.map(todolist =>
+            todolist.todos.map(todo => todo.points)
+          );
           const arrTodayPoints = todolists.map(todolist =>
             todolist.todos.map(todo => {
               const today = moment();
-              if (todo.isCompleted && todo.completedDate && today.diff(todo.completedDate, 'days') === 0) {
+              if (
+                todo.isCompleted &&
+                todo.completedDate &&
+                today.diff(todo.completedDate, 'days') === 0
+              ) {
                 return todo.points;
               }
               return 0;
@@ -82,10 +106,17 @@ exports.getUserStats = (req, res) => {
           );
           const intTodosCompletedToday =
             arrTodayPoints.length &&
-            arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints).length;
-          const intTotalCompletedTodos = arrTotalPoints.length && arrTotalPoints[0].length;
-          const intTodayPoints = arrTodayPoints.length && arrTodayPoints[0].reduce((a, b) => a + b, 0);
-          const intTotalPoints = arrTodayPoints.length && arrTotalPoints[0].reduce((a, b) => a + b, 0);
+            arrTodayPoints[0].filter(
+              intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints
+            ).length;
+          const intTotalCompletedTodos =
+            arrTotalPoints.length && arrTotalPoints[0].length;
+          const intTodayPoints =
+            arrTodayPoints.length &&
+            arrTodayPoints[0].reduce((a, b) => a + b, 0);
+          const intTotalPoints =
+            arrTodayPoints.length &&
+            arrTotalPoints[0].reduce((a, b) => a + b, 0);
 
           res.status(HttpStatus.OK).send({
             todosCompletedToday: intTodosCompletedToday,
@@ -134,7 +165,9 @@ exports.deleteUserAccount = (req, res) => {
         const { dataValues } = user;
         const { password: strHashedPassword } = dataValues;
         if (!dataValues) {
-          res.status(HttpStatus.BAD_REQUEST).send({ message: 'user could not be found' });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .send({ message: 'user could not be found' });
         } else {
           bcrypt
             .compare(password, strHashedPassword)
@@ -142,15 +175,23 @@ exports.deleteUserAccount = (req, res) => {
               if (result) {
                 user
                   .destroy()
-                  .then(() => res.send({ message: 'successfully delete account' }))
-                  .catch(err => res.status(HttpStatus.BAD_REQUEST).send({ message: err }));
+                  .then(() =>
+                    res.send({ message: 'successfully delete account' })
+                  )
+                  .catch(err =>
+                    res.status(HttpStatus.BAD_REQUEST).send({ message: err })
+                  );
               } else {
-                res.status(HttpStatus.BAD_REQUEST).send({ message: 'password does not match' });
+                res
+                  .status(HttpStatus.BAD_REQUEST)
+                  .send({ message: 'password does not match' });
               }
             })
             .catch(err => {
               console.error(err);
-              res.status(HttpStatus.BAD_REQUEST).send({ message: 'password does not match' });
+              res
+                .status(HttpStatus.BAD_REQUEST)
+                .send({ message: 'password does not match' });
             });
         }
       })
@@ -174,7 +215,9 @@ exports.getLeaderboard = (req, res) => {
   })
     .then(arrUsersData => {
       const arrLeaderboardData = arrUsersData.map(objUser => {
-        objUser.todoLists.map(todolist => todolist.todos.map(todo => todo.points));
+        objUser.todoLists.map(todolist =>
+          todolist.todos.map(todo => todo.points)
+        );
         const arrTotalPoints = objUser.todoLists.map(todolist =>
           todolist.todos.map(todo => todo.isCompleted !== null && todo.points)
         );
@@ -182,7 +225,11 @@ exports.getLeaderboard = (req, res) => {
         const arrTodayPoints = objUser.todoLists.map(todolist =>
           todolist.todos.map(todo => {
             const today = moment();
-            if (todo.isCompleted && todo.completedDate && today.diff(todo.completedDate, 'days') === 0) {
+            if (
+              todo.isCompleted &&
+              todo.completedDate &&
+              today.diff(todo.completedDate, 'days') === 0
+            ) {
               return todo.points;
             }
             return 0;
@@ -190,10 +237,15 @@ exports.getLeaderboard = (req, res) => {
         );
         const intTodosCompletedToday =
           arrTodayPoints.length &&
-          arrTodayPoints[0].filter(intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints).length;
-        const intTotalCompletedTodos = arrTotalPoints.length && arrTotalPoints[0].length;
-        const intTodayPoints = arrTodayPoints.length && arrTodayPoints[0].reduce((a, b) => a + b, 0);
-        const intTotalPoints = arrTodayPoints.length && arrTotalPoints[0].reduce((a, b) => a + b, 0);
+          arrTodayPoints[0].filter(
+            intNoOfPoints => intNoOfPoints !== 0 && intNoOfPoints
+          ).length;
+        const intTotalCompletedTodos =
+          arrTotalPoints.length && arrTotalPoints[0].length;
+        const intTodayPoints =
+          arrTodayPoints.length && arrTodayPoints[0].reduce((a, b) => a + b, 0);
+        const intTotalPoints =
+          arrTodayPoints.length && arrTotalPoints[0].reduce((a, b) => a + b, 0);
         return {
           username: objUser.userName,
           todosCompletedToday: intTodosCompletedToday,

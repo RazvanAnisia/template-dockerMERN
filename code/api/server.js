@@ -6,6 +6,8 @@ const sequelize = require('./config/database');
 const http = require('http');
 const socketIo = require('socket.io');
 const axios = require('axios');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -19,6 +21,25 @@ const leaderboard = require('./routes/leaderboard');
 const tags = require('./routes/tags');
 const auth = require('./middleware/auth');
 const authorization = require('./middleware/authorization');
+// const errorHandler = require('./middleware/errorHandler');
+
+app.use(
+  expressWinston.logger({
+    transports: [new winston.transports.Console()],
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.json()
+    ),
+    meta: true,
+    msg:
+      'HTTP {{res.statusCode}} \n {{req.method}} \n {{res.responseTime}}ms \n {{req.url}}',
+    expressFormat: true,
+    colorize: true,
+    ignoreRoute: (req, res) => {
+      return false;
+    }
+  })
+);
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +52,8 @@ app.use('/tag', auth.verifyToken, authorization.verifyUser, tags);
 app.use('/user', auth.verifyToken, authorization.verifyUser, user);
 app.use('/login', login);
 app.use('/signup', signup);
+
+// app.use(errorHandler);
 
 require('./models/relations');
 
@@ -56,11 +79,13 @@ const getLeaderboard = async socket => {
   }
 };
 
-//Socket server
+// Socket server
 io.on('connection', socket => {
   console.log('New client connected');
   setInterval(() => getLeaderboard(socket), 5000);
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-server.listen(process.env.SOCKET_PORT, () => console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`));
+server.listen(process.env.SOCKET_PORT, () =>
+  console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`)
+);

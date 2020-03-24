@@ -2,10 +2,7 @@ const express = require('express');
 const router = express.Router();
 const TodosController = require('../controllers/todos');
 
-router
-  .route('/')
-  .get(TodosController.getTodos)
-  .post(TodosController.createTodo);
+router.route('/').post(TodosController.createTodo);
 
 router
   .route('/:id')

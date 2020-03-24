@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const HttpStatus = require('http-status-codes');
+const handleError = require('../helpers/error');
 
 exports.verifyUser = (req, res, next) => {
   const { locals } = req;
@@ -11,5 +13,13 @@ exports.verifyUser = (req, res, next) => {
       req.user = user;
       next();
     })
-    .catch(err => res.sendStatus(403));
+    .catch(() =>
+      handleError(
+        {
+          statusCode: HttpStatus.UNAUTHORIZED,
+          message: 'Forbidden'
+        },
+        res
+      )
+    );
 };
