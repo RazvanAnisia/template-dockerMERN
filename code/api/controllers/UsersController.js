@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 const HttpStatus = require('http-status-codes');
-const User = require('../models/user');
-const Todo = require('../models/todo');
-const TodoList = require('../models/todolist');
+const User = require('../models/User');
+const Todo = require('../models/Todo');
+const TodoList = require('../models/Todolist');
 
 const saltRounds = 10;
 

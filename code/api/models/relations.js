@@ -1,8 +1,8 @@
-const User = require('./user');
-const Todo = require('./todo');
-const Tag = require('./tag');
-const TodoTag = require('./todoTags');
-const TodoList = require('./todolist');
+const User = require('./User');
+const Todo = require('./Todo');
+const Tag = require('./Tag');
+const TodoTag = require('./TodoTags');
+const TodoList = require('./Todolist');
 
 User.hasMany(TodoList);
 TodoList.belongsTo(User, {

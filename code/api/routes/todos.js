@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TodosController = require('../controllers/todos');
+const TodosController = require('../controllers/TodosController');
 
 router.route('/').post(TodosController.createTodo);
 

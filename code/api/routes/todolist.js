@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TodoListController = require('../controllers/todolist');
+const TodoListController = require('../controllers/TodoListsController');
 
 router
   .route('/')

@@ -1,6 +1,6 @@
-const Todo = require('../models/todo');
-const TodoList = require('../models/todolist');
-const Tags = require('../models/tag');
+const Todo = require('../models/Todo');
+const TodoList = require('../models/Todolist');
+const Tags = require('../models/Tag');
 /**
  *
  * @param {object} objUser user
@@ -17,7 +17,7 @@ const fetchAll = async objUser => {
       ]
     });
     return arrTodoLists
-      ? { bSuccess: true, body: arrTodoLists }
+      ? { bSuccess: true, arrTodoLists }
       : { bSuccess: false };
   } catch (err) {
     return { bSuccess: false, err };
@@ -56,7 +56,7 @@ const updateOne = async (strTodoListName, strTodoListId) => {
       name: strTodoListName
     });
     return objUpdatedTodolist
-      ? { body: objUpdatedTodolist, bSuccess: true }
+      ? { objUpdatedTodolist, bSuccess: true }
       : { bSuccess: false };
   } catch (err) {
     return { bSuccess: false, err: err };

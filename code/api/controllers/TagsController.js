@@ -1,4 +1,4 @@
-const Tag = require('../models/tag');
+const Tag = require('../models/Tag');
 
 exports.getTags = (req, res) => {
   const { user } = req;

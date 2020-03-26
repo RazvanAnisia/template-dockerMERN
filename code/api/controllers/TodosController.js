@@ -1,5 +1,5 @@
-const Todo = require('../models/todo');
-const TodoList = require('../models/todolist');
+const Todo = require('../models/Todo');
+const TodoList = require('../models/Todolist');
 const HttpStatus = require('http-status-codes');
 const handleError = require('../helpers/error');
 

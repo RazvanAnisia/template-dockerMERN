@@ -11,8 +11,10 @@ const handleError = require('../helpers/error');
 const getTodoLists = async (req, res) => {
   const { user: objUser } = req;
   try {
-    const { bSuccess, body, err } = await TodoListService.fetchAll(objUser);
-    if (bSuccess) return res.send(body);
+    const { arrTodoLists, bSuccess, err } = await TodoListService.fetchAll(
+      objUser
+    );
+    if (bSuccess) return res.send(arrTodoLists);
     handleError(HttpStatus.BAD_REQUEST, 'Could not get todolists', res, err);
   } catch (err) {
     handleError(HttpStatus.BAD_REQUEST, 'Could not get todolists', res, err);
@@ -30,14 +32,14 @@ const createTodoList = async (req, res) => {
   const { name: strTodoListName } = req.body;
   const { user: objUser } = req;
   try {
-    const { bSuccess, body, err } = await TodoListService.createOne(
+    const { objNewTodoList, bSuccess, err } = await TodoListService.createOne(
       objUser,
       strTodoListName
     );
     if (bSuccess)
       return res.send({
         message: 'Created todolist',
-        data: body
+        data: objNewTodoList
       });
     handleError(HttpStatus.CONFLICT, 'Failed to create todolist', res, err);
   } catch (err) {
