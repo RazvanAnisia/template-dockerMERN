@@ -40,13 +40,7 @@ const createTodo = (req, res) => {
                 res.status(200).send({ message: 'successfully added todo' })
               )
               .catch(() =>
-                handleError(
-                  {
-                    statusCodeCode: HttpStatus.CONFLICT,
-                    message: 'Failed to create todo'
-                  },
-                  res
-                )
+                handleError(HttpStatus.CONFLICT, 'Failed to create todo', res)
               );
           return res.status(200).send({ message: 'successfully added todo' });
         })
@@ -56,13 +50,7 @@ const createTodo = (req, res) => {
         })
     )
     .catch(() =>
-      handleError(
-        {
-          statusCode: HttpStatus.CONFLICT,
-          message: 'Failed to create todo'
-        },
-        res
-      )
+      handleError(HttpStatus.CONFLICT, 'Failed to create todo', res)
     );
 };
 
@@ -75,23 +63,9 @@ exports.showTodo = (req, res) => {
     .then(results => {
       results
         ? res.send(results)
-        : handleError(
-            {
-              statusCode: HttpStatus.NOT_FOUND,
-              message: 'Could not find todo'
-            },
-            res
-          );
+        : handleError(HttpStatus.NOT_FOUND, 'Could not find todo');
     })
-    .catch(() =>
-      handleError(
-        {
-          statusCode: HttpStatus.NOT_FOUND,
-          message: 'Could not find todo'
-        },
-        res
-      )
-    );
+    .catch(() => handleError(HttpStatus.NOT_FOUND, 'Could not find todo', res));
 };
 
 exports.updateTodo = (req, res) => {

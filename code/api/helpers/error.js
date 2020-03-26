@@ -1,15 +1,18 @@
+const logger = require('../config/logger');
+
 /**
- *
- * @param {object} err express error
- * @param {object} res express response
- * @returns {object} response
+ * @param {number} intStatusCode status code
+ * @param {string} strMessage message
+ * @param {object} res Express response object
+ * @param {object} err error
+ * @returns {object} response object express
  */
-const handleError = (err, res) => {
-  const { statusCode, message } = err;
-  return res.status(statusCode).send({
+const handleError = (intStatusCode, strMessage, res, err) => {
+  err && logger.error('ERROR ', err);
+  return res.status(intStatusCode).send({
     status: 'error',
-    statusCode,
-    message
+    intStatusCode,
+    strMessage
   });
 };
 

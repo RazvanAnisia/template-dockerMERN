@@ -1,6 +1,3 @@
-const Todo = require('../models/todo');
-const TodoList = require('../models/todolist');
-const Tags = require('../models/tag');
 const HttpStatus = require('http-status-codes');
 const TodoListService = require('../services/todoListService');
 const handleError = require('../helpers/error');
@@ -10,21 +7,16 @@ const handleError = require('../helpers/error');
  * @description returns all todolist with their todos and associated tags
  * @param {object} req request
  * @param {object} res response
- * @returns {object} user Todolists
  */
 const getTodoLists = async (req, res) => {
   const { user: objUser } = req;
-  const arrUserTodoLists = await TodoListService.fetchTodosLists(objUser).catch(
-    () =>
-      handleError(
-        {
-          statusCodeCode: HttpStatus.BAD_REQUEST,
-          message: 'Could not get todolists for user'
-        },
-        res
-      )
-  );
-  return res.send(arrUserTodoLists);
+  try {
+    const { bSuccess, body, err } = await TodoListService.fetchAll(objUser);
+    if (bSuccess) return res.send(body);
+    handleError(HttpStatus.BAD_REQUEST, 'Could not get todolists', res, err);
+  } catch (err) {
+    handleError(HttpStatus.BAD_REQUEST, 'Could not get todolists', res, err);
+  }
 };
 
 /**
@@ -32,18 +24,25 @@ const getTodoLists = async (req, res) => {
  * @description creates a new todolist
  * @param {object} req request
  * @param {object} res response
- * @returns {object} new Todolist
  */
 const createTodoList = async (req, res) => {
-  const { name } = req.body;
+  // TODO add validation for name
+  const { name: strTodoListName } = req.body;
   const { user: objUser } = req;
-  const newTodoList = await objUser
-    .createTodoList({ name })
-    .catch(err => res.status().send({ message: err }));
-  return res.send({
-    message: 'todolist created',
-    data: newTodoList
-  });
+  try {
+    const { bSuccess, body, err } = await TodoListService.createOne(
+      objUser,
+      strTodoListName
+    );
+    if (bSuccess)
+      return res.send({
+        message: 'Created todolist',
+        data: body
+      });
+    handleError(HttpStatus.CONFLICT, 'Failed to create todolist', res, err);
+  } catch (err) {
+    handleError(HttpStatus.CONFLICT, 'Failed to create todolist', res, err);
+  }
 };
 
 /**
@@ -51,20 +50,26 @@ const createTodoList = async (req, res) => {
  * @description updates a todolist
  * @param {object} req request
  * @param {object} res response
- * @returns {object} updates Todolist
  */
 const updateTodoList = async (req, res) => {
-  const { name: strName } = req.body;
+  // TODO add validation for name
+  const { name: strTodoListName } = req.body;
+  const { id: strTodoListId } = req.params;
 
-  const objTodoList = await TodoList.findOne({
-    where: { id: req.params.id }
-  }).catch(err => res.status(500).send({ mesage: err }));
-
-  const objUpdatedTodolist = await objTodoList
-    .update({ strName })
-    .catch(err => res.status(500).send({ mesage: err }));
-
-  return res.send({ message: 'updated todolist', data: objUpdatedTodolist });
+  try {
+    const { bSuccess, err } = await TodoListService.updateOne(
+      strTodoListName,
+      strTodoListId
+    );
+    if (bSuccess)
+      return res.send({
+        message: 'Updated todolist',
+        data: { id: strTodoListId }
+      });
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to update todolist', res, err);
+  } catch (err) {
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to update todolist', res, err);
+  }
 };
 
 /**
@@ -76,16 +81,17 @@ const updateTodoList = async (req, res) => {
 const deleteTodoList = async (req, res) => {
   const { id: strTodoListId } = req.params;
 
-  const objDeletedTodoList = await TodoList.destroy({
-    where: {
-      id: strTodoListId
-    }
-  }).catch(err => res.status(500).send({ mesage: err }));
-
-  return res.send({
-    message: 'deleted todolist',
-    data: { objDeletedTodoList }
-  });
+  try {
+    const { bSuccess, err } = await TodoListService.deleteOne(strTodoListId);
+    if (bSuccess)
+      return res.send({
+        message: 'Deleted todolist',
+        data: { id: strTodoListId }
+      });
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to delete todolist', res, err);
+  } catch (err) {
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to delete todolist', res, err);
+  }
 };
 
 exports.getTodoLists = getTodoLists;

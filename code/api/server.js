@@ -6,8 +6,6 @@ const sequelize = require('./config/database');
 const http = require('http');
 const socketIo = require('socket.io');
 const axios = require('axios');
-const winston = require('winston');
-const expressWinston = require('express-winston');
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -21,25 +19,10 @@ const leaderboard = require('./routes/leaderboard');
 const tags = require('./routes/tags');
 const auth = require('./middleware/auth');
 const authorization = require('./middleware/authorization');
+const logger = require('./middleware/logger');
 // const errorHandler = require('./middleware/errorHandler');
 
-app.use(
-  expressWinston.logger({
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.json()
-    ),
-    meta: true,
-    msg:
-      'HTTP {{res.statusCode}} \n {{req.method}} \n {{res.responseTime}}ms \n {{req.url}}',
-    expressFormat: true,
-    colorize: true,
-    ignoreRoute: (req, res) => {
-      return false;
-    }
-  })
-);
+app.use(logger);
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -89,3 +72,10 @@ io.on('connection', socket => {
 server.listen(process.env.SOCKET_PORT, () =>
   console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`)
 );
+
+// TODO Add FAKER library for seeding the db
+// TODO Add migrations
+// TODO Add testing with Jest and Supertest
+// TODO Add validation for all frontend data https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
+// TODO Add support for profile avatars, cloudinary and cdm
+// TODO Add confirmation email with Sendgrid or Mailgun

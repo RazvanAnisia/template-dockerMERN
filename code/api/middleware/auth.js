@@ -7,25 +7,15 @@ exports.verifyToken = (req, res, next) => {
   if (bearerHeader !== undefined && bearerHeader.length > 0) {
     const token = bearerHeader.split(' ')[1];
     jwt.verify(token, process.env.TOKEN_SECRET, (err, authData) => {
-      err &&
-        handleError(
-          {
-            statusCode: HttpStatus.FORBIDDEN,
-            message: 'Forbidden'
-          },
-          res
-        ) &&
-        next('invalid credentials');
-      req.locals = authData.email;
-      next();
+      if (err) {
+        handleError(HttpStatus.FORBIDDEN, 'Forbidden', res, err) &&
+          next('invalid credentials');
+      } else {
+        req.locals = authData.email;
+        next();
+      }
     });
   } else {
-    handleError(
-      {
-        statusCode: HttpStatus.FORBIDDEN,
-        message: 'Forbidden'
-      },
-      res
-    );
+    handleError(HttpStatus.FORBIDDEN, 'Forbidden', res, 'No Bearer Token');
   }
 };

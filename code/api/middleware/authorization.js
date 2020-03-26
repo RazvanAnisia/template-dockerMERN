@@ -1,25 +1,18 @@
-const User = require('../models/user');
 const HttpStatus = require('http-status-codes');
 const handleError = require('../helpers/error');
+const userService = require('../services/userService');
 
-exports.verifyUser = (req, res, next) => {
-  const { locals } = req;
-  User.findOne({
-    where: {
-      email: locals
-    }
-  })
-    .then(user => {
-      req.user = user;
+exports.verifyUser = async (req, res, next) => {
+  const { locals: strUserEmail } = req;
+  try {
+    const { bSuccess, objUser, err } = await userService.findUser(strUserEmail);
+    if (bSuccess) {
+      req.user = objUser;
       next();
-    })
-    .catch(() =>
-      handleError(
-        {
-          statusCode: HttpStatus.UNAUTHORIZED,
-          message: 'Forbidden'
-        },
-        res
-      )
-    );
+    } else {
+      handleError(HttpStatus.UNAUTHORIZED, 'Forbidden', res, err);
+    }
+  } catch (err) {
+    handleError(HttpStatus.UNAUTHORIZED, 'Forbidden', res, err);
+  }
 };
