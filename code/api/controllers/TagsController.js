@@ -1,5 +1,4 @@
-const Tag = require('../models/Tag');
-const TagsService = require('../services/tagsService');
+const TagsService = require('../services/tagService');
 const handleError = require('../helpers/error');
 const HttpStatus = require('http-status-codes');
 

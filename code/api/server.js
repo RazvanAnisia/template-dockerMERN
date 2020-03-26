@@ -73,6 +73,9 @@ server.listen(process.env.SOCKET_PORT, () =>
   console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`)
 );
 
+// TODO When an event is completed, it will triggered a completed event, based on the priority and points it had, user will gain points
+// TODO Add Levels for users(create a levels table with some predefined levels and points needed ) and associate each user to one
+// TODO add cross-orogin CORS headers so only our frontend can access the api
 // TODO Add FAKER library for seeding the db
 // TODO Add migrations
 // TODO Add testing with Jest and Supertest
