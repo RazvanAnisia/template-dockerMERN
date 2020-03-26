@@ -1,57 +1,103 @@
 const Tag = require('../models/Tag');
+const TagsService = require('../services/tagsService');
+const handleError = require('../helpers/error');
+const HttpStatus = require('http-status-codes');
 
-exports.getTags = (req, res) => {
-  const { user } = req;
-  user
-    .getTags()
-    .then(results => {
-      res.send(results);
-    })
-    .catch(err => {
-      res.status(500).send({ mesage: err });
-      console.log(err);
-    });
+/**
+ *
+ * @description returns all tags
+ * @param {object} req request
+ * @param {object} res response
+ */
+const getTags = async (req, res) => {
+  const { user: objUser } = req;
+  try {
+    const { arrTags, bSuccess, err } = await TagsService.fetchAll(objUser);
+    if (bSuccess) return res.send(arrTags);
+    handleError(HttpStatus.BAD_REQUEST, 'Could not get tags', res, err);
+  } catch (err) {
+    handleError(HttpStatus.BAD_REQUEST, 'Could not get tags', res, err);
+  }
 };
 
-exports.createTag = (req, res) => {
-  const { name, color } = req.body;
-  const { user } = req;
-  user
-    .createTag({ name, color })
-    .then(() => res.status(200).json({ message: 'successfully added tag' }))
-    .catch(err => {
-      res.status(500).send({ message: err });
-      console.log(err);
-    });
+/**
+ *
+ * @description creates a tag
+ * @param {object} req request
+ * @param {object} res response
+ */
+const createTag = async (req, res) => {
+  // TODO add validation for tag name and color
+  const { name: strTagName, color: strTagColor } = req.body;
+  const { user: objUser } = req;
+
+  try {
+    const { objNewTag, bSuccess, err } = await TagsService.createOne(
+      objUser,
+      strTagName,
+      strTagColor
+    );
+    if (bSuccess)
+      return res.send({
+        message: 'Created tag',
+        data: objNewTag
+      });
+    handleError(HttpStatus.CONFLICT, 'Failed to create tag', res, err);
+  } catch (err) {
+    handleError(HttpStatus.CONFLICT, 'Failed to create tag', res, err);
+  }
 };
 
-exports.updateTag = (req, res) => {
-  const { name, color } = req.body;
-  Tag.update({ name, color }, { where: { id: req.params.id } })
-    .then(results => {
-      results[0]
-        ? res.send({ message: 'Tag successfully updated' })
-        : res.send({ message: 'Tag not found' });
-    })
-    .catch(err => {
-      res.status(500).send({ mesage: err });
-      console.log(err);
-    });
+/**
+ *
+ * @description updates tag
+ * @param {object} req request
+ * @param {object} res response
+ */
+const updateTag = async (req, res) => {
+  // TODO add validation for tag name and color
+  const { name: strTagName, color: strTagColor } = req.body;
+  const { id: strTagId } = req.params;
+  try {
+    const { objUpdatedTag, bSuccess, err } = await TagsService.updateOne(
+      strTagId,
+      strTagName,
+      strTagColor
+    );
+    if (bSuccess)
+      return res.send({
+        message: 'Updated tag',
+        data: objUpdatedTag
+      });
+    handleError(HttpStatus.CONFLICT, 'Failed to update tag', res, err);
+  } catch (err) {
+    handleError(HttpStatus.CONFLICT, 'Failed to update tag', res, err);
+  }
 };
 
-exports.deleteTag = (req, res) => {
-  Tag.destroy({
-    where: {
-      id: req.params.id
-    }
-  })
-    .then(results => {
-      results
-        ? res.send({ message: 'Tag successfully deleted' })
-        : res.status(500).send({ mesage: 'Tag not found' });
-    })
-    .catch(err => {
-      res.status(500).send({ mesage: err });
-      console.log(err);
-    });
+/**
+ *
+ * @description deletes a todolist
+ * @param {object} req request
+ * @param {object} res response
+ */
+const deleteTag = async (req, res) => {
+  const { id: strTagId } = req.params;
+
+  try {
+    const { bSuccess, err } = await TagsService.deleteOne(strTagId);
+    if (bSuccess)
+      return res.send({
+        message: 'Deleted tag',
+        data: { id: strTagId }
+      });
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to delete tag', res, err);
+  } catch (err) {
+    handleError(HttpStatus.BAD_REQUEST, 'Failed to delete tag', res, err);
+  }
 };
+
+exports.getTags = getTags;
+exports.createTag = createTag;
+exports.updateTag = updateTag;
+exports.deleteTag = deleteTag;

@@ -10,8 +10,7 @@ const TodoList = sequelize.define('todoList', {
   },
   name: {
     type: Sequelize.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
   }
 });
 

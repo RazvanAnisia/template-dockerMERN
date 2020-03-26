@@ -35,7 +35,7 @@ const createOne = async (objUser, strTodoListName) => {
       name: strTodoListName
     });
     return objNewTodoList
-      ? { bSuccess: true, body: objNewTodoList }
+      ? { bSuccess: true, objNewTodoList }
       : { bSuccess: false };
   } catch (err) {
     return { bSuccess: false, err };
