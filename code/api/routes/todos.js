@@ -10,6 +10,4 @@ router
   .put(TodosController.updateTodo)
   .delete(TodosController.deleteTodo);
 
-router.route('/complete/:id').put(TodosController.completeTodo);
-
 module.exports = router;

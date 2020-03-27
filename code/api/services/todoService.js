@@ -1,33 +1,12 @@
 const Todo = require('../models/Todo');
 const TodoList = require('../models/Todolist');
 const Tag = require('../models/Tag');
-/**
- *
- * @param {object} objUser user
- * @returns {Array} array of todolists corresponding to the user
- */
-const fetchAll = async objUser => {
-  try {
-    const arrTodoLists = await objUser.getTodoLists({
-      include: [
-        {
-          model: Todo,
-          include: [Tag]
-        }
-      ]
-    });
-    return arrTodoLists
-      ? { bSuccess: true, arrTodoLists }
-      : { bSuccess: false };
-  } catch (err) {
-    return { bSuccess: false, err };
-  }
-};
 
 /**
+ * @description Attempt to create a todo with the provided object
  * @param {string} strTodoListId todolist id
  * @param {object} objTodoParams all the fields the new todo needs
- * @returns {object} new todo object
+ * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with newTodo
  */
 const createOne = async (strTodoListId, objTodoParams) => {
   const { tagIds: arrTagIds } = objTodoParams;
@@ -49,8 +28,9 @@ const createOne = async (strTodoListId, objTodoParams) => {
 };
 
 /**
+ * @description Attempt to find the todo for the provided id
  * @param {string} strTodoId todo id
- * @returns {object|null} updated todo object
+ * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with todo
  */
 const showOne = async strTodoId => {
   try {
@@ -65,23 +45,33 @@ const showOne = async strTodoId => {
 };
 
 /**
+ * @description Attempt to update the todo witht the corresponding id
  * @param {string} strTodoId todo id
  * @param {object} objTodoParams all the fields the new todo needs
- * @returns {object} updated todo object
+ * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with updatedTodo
  */
 const updateOne = async (strTodoId, objTodoParams) => {
-  const { tagIds: arrTagIds } = objTodoParams;
+  const { tagIds: arrTagIds, isCompleted: bIsCompleted } = objTodoParams;
+
   try {
     const objTodo = await Todo.findOne({
       where: { id: strTodoId }
     });
+
+    if (bIsCompleted) {
+      const strCompletedDate = new Date().toISOString().split('T')[0];
+      objTodoParams.completedDate = strCompletedDate;
+    }
+
     const objUpdatedTodo = await objTodo.update(objTodoParams);
+
     if (arrTagIds) {
       const objAddedTags = await objUpdatedTodo.setTags([...arrTagIds]);
       return objAddedTags
         ? { bSuccess: true, objUpdatedTodo }
         : { bSuccess: false };
     }
+
     return objUpdatedTodo
       ? { bSuccess: true, objUpdatedTodo }
       : { bSuccess: false };
@@ -91,8 +81,9 @@ const updateOne = async (strTodoId, objTodoParams) => {
 };
 
 /**
+ * @description Attempt to delete the todo witht the corresponding id
  * @param {string} strTodoId todo id
- * @returns {object} if the query succedded or not
+ * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with result
  */
 const deleteOne = async strTodoId => {
   try {
@@ -107,7 +98,6 @@ const deleteOne = async strTodoId => {
   }
 };
 
-exports.fetchAll = fetchAll;
 exports.createOne = createOne;
 exports.updateOne = updateOne;
 exports.deleteOne = deleteOne;

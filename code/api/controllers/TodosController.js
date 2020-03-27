@@ -1,14 +1,14 @@
 const Todo = require('../models/Todo');
-const TodoList = require('../models/Todolist');
 const HttpStatus = require('http-status-codes');
-const handleError = require('../helpers/error');
 const TodoService = require('../services/todoService');
+const handleError = require('../helpers/error');
 
 /**
  *
  * @description create todo
  * @param {object} req request
  * @param {object} res response
+ * @returns {Promise<*>} response promise
  */
 const createTodo = async (req, res) => {
   const {
@@ -53,6 +53,7 @@ const createTodo = async (req, res) => {
  * @description show todo
  * @param {object} req request
  * @param {object} res response
+ * @returns {Promise<*>} response promise
  */
 const showTodo = async (req, res) => {
   const { id: strTodoId } = req.params;
@@ -71,6 +72,7 @@ const showTodo = async (req, res) => {
  * @description update todo
  * @param {object} req request
  * @param {object} res response
+ * @returns {Promise<*>} response promise
  */
 const updateTodo = async (req, res) => {
   const { id: strTodoId } = req.params;
@@ -82,7 +84,8 @@ const updateTodo = async (req, res) => {
     tagIds: arrTagIds,
     priority: strPriority,
     points: intPoints,
-    todoListId: strTodoListId
+    todoListId: strTodoListId,
+    isCompleted: bIsCompleted
   } = req.body;
 
   const objTodoParams = {
@@ -92,7 +95,8 @@ const updateTodo = async (req, res) => {
     tagIds: arrTagIds,
     priority: strPriority,
     points: intPoints,
-    todolistId: strTodoListId
+    todolistId: strTodoListId,
+    isCompleted: bIsCompleted
   };
 
   try {
@@ -117,6 +121,7 @@ const updateTodo = async (req, res) => {
  * @description delete todo
  * @param {object} req request
  * @param {object} res response
+ * @returns {Promise<*>} response promise
  */
 const deleteTodo = async (req, res) => {
   const { id: strTodoId } = req.params;
@@ -132,23 +137,6 @@ const deleteTodo = async (req, res) => {
   } catch (err) {
     handleError(HttpStatus.BAD_REQUEST, 'Failed to delete todo', res, err);
   }
-};
-
-// TODO figure out if update is enough and can remove this
-exports.completeTodo = (req, res) => {
-  const { isCompleted } = req.body;
-  const completedDate = new Date().toISOString().split('T')[0];
-  const objTodoProp = { isCompleted, completedDate };
-  Todo.update(objTodoProp, { where: { id: req.params.id } })
-    .then(results => {
-      results[0]
-        ? res.send({ message: 'Todo successfully completed' })
-        : res.send({ message: 'todo not found' });
-    })
-    .catch(err => {
-      res.status(500).send({ mesage: err });
-      console.log(err);
-    });
 };
 
 exports.createTodo = createTodo;
