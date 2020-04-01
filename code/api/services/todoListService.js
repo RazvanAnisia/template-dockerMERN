@@ -1,6 +1,4 @@
-const Todo = require('../models/Todo');
-const TodoList = require('../models/Todolist');
-const Tags = require('../models/Tag');
+const { Todo, TodoList, Tag } = require('../database/models');
 /**
  *
  * @param {object} objUser user
@@ -12,7 +10,7 @@ const fetchAll = async objUser => {
       include: [
         {
           model: Todo,
-          include: [Tags]
+          include: [Tag]
         }
       ]
     });

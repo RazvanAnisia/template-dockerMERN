@@ -11,6 +11,13 @@ const TodoList = sequelize.define('todoList', {
   name: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  userId: {
+    type: DataTypes.UUID,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
   }
 });
 

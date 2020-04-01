@@ -1,4 +1,3 @@
-const Todo = require('../models/Todo');
 const HttpStatus = require('http-status-codes');
 const TodoService = require('../services/todoService');
 const handleError = require('../helpers/error');

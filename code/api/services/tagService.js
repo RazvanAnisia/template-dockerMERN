@@ -1,4 +1,5 @@
-const Tag = require('../models/Tag');
+const { Tag } = require('../database/models');
+
 /**
  *
  * @param {object} objUser user
@@ -21,6 +22,7 @@ const fetchAll = async objUser => {
  * @returns {object} new tag object
  */
 const createOne = async (objUser, strTagName, strTagColor) => {
+  console.log(objUser);
   try {
     const objNewTag = await objUser.createTag({
       name: strTagName,

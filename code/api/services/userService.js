@@ -1,6 +1,4 @@
-const User = require('../models/User');
-const Todo = require('../models/Todo');
-const TodoList = require('../models/Todolist');
+const { User } = require('../database/models');
 
 /**
  *

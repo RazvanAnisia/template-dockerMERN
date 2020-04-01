@@ -1,9 +1,10 @@
-const User = require('./User');
-const Todo = require('./Todo');
-const Tag = require('./Tag');
-const TodoTag = require('./TodoTags');
-const TodoList = require('./Todolist');
+const User = require('./models/user')();
+const Todo = require('./models/todo');
+const Tag = require('./models/tag');
+const TodoTag = require('./models/todotags');
+const TodoList = require('./models/todolist');
 
+console.log(User);
 User.hasMany(TodoList);
 TodoList.belongsTo(User, {
   foreignKey: {
@@ -36,9 +37,7 @@ Tag.belongsTo(User, {
 
 Tag.belongsToMany(Todo, {
   through: TodoTag
-  // constraints: false
 });
 Todo.belongsToMany(Tag, {
   through: TodoTag
-  //  constraints: false
 });

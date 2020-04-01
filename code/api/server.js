@@ -38,19 +38,23 @@ app.use('/signup', signup);
 
 // app.use(errorHandler);
 
-require('./models/relations');
+// require('./database/relations');
 
-sequelize
-  .sync()
-  // .sync({ force: true })
-  .then(() =>
-    app.listen(process.env.PORT || 9000, () => {
-      console.log(`listening on port ${process.env.PORT}`);
-    })
-  )
-  .catch(err => {
-    console.log(err);
-  });
+// sequelize
+//   .sync()
+//   // .sync({ force: true })
+//   .then(() =>
+//     // app.listen(process.env.PORT || 9000, () => {
+//     //   console.log(`listening on port ${process.env.PORT}`);
+//     // })
+//   )
+//   .catch(err => {
+//     console.log(err);
+//   });
+
+app.listen(process.env.PORT || 9000, () => {
+  console.log(`listening on port ${process.env.PORT}`);
+});
 
 const getLeaderboard = async socket => {
   try {

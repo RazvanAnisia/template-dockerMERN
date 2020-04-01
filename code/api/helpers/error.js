@@ -1,4 +1,4 @@
-const logger = require('../config/logger');
+const logger = require('../services/logger');
 
 /**
  * @param {number} intStatusCode status code

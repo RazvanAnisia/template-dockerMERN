@@ -2,12 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 const HttpStatus = require('http-status-codes');
-const User = require('../models/User');
-const Todo = require('../models/Todo');
-const TodoList = require('../models/Todolist');
+const { User, Todo, TodoList } = require('../database/models');
 
 const saltRounds = 10;
-
 exports.createUser = (req, res) => {
   const { firstName, lastName, email, password, userName } = req.body;
   bcrypt
