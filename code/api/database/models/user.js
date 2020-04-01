@@ -38,11 +38,11 @@ module.exports = (sequelize, DataTypes) => {
     const { TodoList, Tag } = models;
     User.hasMany(TodoList, {
       // foreignKey: 'userId',
-      // onDelete: 'CASCADE'
+      onDelete: 'CASCADE'
     });
     User.hasMany(Tag, {
       // foreignKey: 'userId',
-      // onDelete: 'CASCADE'
+      onDelete: 'CASCADE'
     });
   };
   return User;

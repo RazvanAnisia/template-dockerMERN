@@ -40,8 +40,21 @@ module.exports = {
         allowNull: false,
         defaultValue: 1
       },
-      createdAt: Sequelize.DATE,
-      updatedAt: Sequelize.DATE
+      todoListId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'TodoLists', // name of Target model
+          key: 'id' // key in Target model that we're referencing
+        }
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
     });
   },
   down: (queryInterface, Sequelize) => {

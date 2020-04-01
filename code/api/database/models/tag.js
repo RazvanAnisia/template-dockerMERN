@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false
-        // TODO Make the name unqiue for the user
+        // TODO Make the name unique for the user
       },
       color: {
         type: DataTypes.STRING,
@@ -25,12 +25,13 @@ module.exports = (sequelize, DataTypes) => {
 
     Tag.belongsToMany(Todo, {
       through: TodoTag,
-      foreignKey: 'tagId'
+      // foreignKey: 'tagId'
+      as: 'Tag'
     });
     Tag.belongsTo(User, {
-      foreignKey: {
-        allowNull: false
-      },
+      // foreignKey: {
+      //   allowNull: false
+      // },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });

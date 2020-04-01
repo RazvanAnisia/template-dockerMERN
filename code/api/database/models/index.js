@@ -12,10 +12,16 @@ let sequelize;
 if (config.url) {
   sequelize = new Sequelize(config.url, config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    dialect: config.dialect,
-    host: config.host
-  });
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    // config.logging,
+    {
+      dialect: config.dialect,
+      host: config.host
+    }
+  );
 }
 
 fs.readdirSync(__dirname)

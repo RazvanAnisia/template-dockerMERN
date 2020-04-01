@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  TodoTags.associate = models => {
-    // associations can be defined here
-  };
+  // TodoTags.associate = models => {
+  //   // associations can be defined here
+  // };
   return TodoTags;
 };
