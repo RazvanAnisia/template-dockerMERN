@@ -22,9 +22,7 @@ exports.createUser = (req, res) => {
           );
         })
         .catch(err => {
-          res
-            .status(HttpStatus.BAD_REQUEST)
-            .send({ message: err.errors[0].message });
+          res.status(HttpStatus.BAD_REQUEST).send({ message: err });
         });
     })
     .catch(err => {
@@ -72,7 +70,7 @@ exports.loginUser = (req, res) => {
     })
     .catch(err => {
       res.status(HttpStatus.BAD_REQUEST).send({ message: 'wrong credentials' });
-      console.log(err);
+      // console.log(err);
     });
 };
 

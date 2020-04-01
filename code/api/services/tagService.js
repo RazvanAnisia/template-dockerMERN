@@ -22,7 +22,6 @@ const fetchAll = async objUser => {
  * @returns {object} new tag object
  */
 const createOne = async (objUser, strTagName, strTagColor) => {
-  console.log(objUser);
   try {
     const objNewTag = await objUser.createTag({
       name: strTagName,

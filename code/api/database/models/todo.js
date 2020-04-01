@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
       title: {
@@ -53,8 +53,8 @@ module.exports = (sequelize, DataTypes) => {
       // onUpdate: 'CASCADE'
     });
     Todo.belongsToMany(Tag, {
-      through: TodoTag,
-      as: 'Todo'
+      through: TodoTag
+      // as: 'Todo'
     });
   };
   return Todo;

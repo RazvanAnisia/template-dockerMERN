@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
       name: {
@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     const { Todo, TodoTag, User } = models;
 
     Tag.belongsToMany(Todo, {
-      through: TodoTag,
+      through: TodoTag
       // foreignKey: 'tagId'
-      as: 'Tag'
+      // as: 'Tag'
     });
     Tag.belongsTo(User, {
       // foreignKey: {

@@ -1,6 +1,4 @@
-const Todo = require('../models/Todo');
-const TodoList = require('../models/Todolist');
-const Tag = require('../models/Tag');
+const { Tag, TodoList, Todo } = require('../database/models');
 
 /**
  * @description Attempt to create a todo with the provided object
@@ -30,7 +28,7 @@ const createOne = async (strTodoListId, objTodoParams) => {
 /**
  * @description Attempt to find the todo for the provided id
  * @param {string} strTodoId todo id
- * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with todo
+ * @returns {Promise<{success: booletodoListsan, result: *}|{success: boolean, err: Error}>} promise with todo
  */
 const showOne = async strTodoId => {
   try {

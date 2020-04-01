@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
       },
       name: {
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     const { Todo, User } = models;
 
     TodoList.hasMany(Todo, {
-      foreignKey: 'todoListId',
+      // foreignKey: 'todoListId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     });
