@@ -10,7 +10,13 @@ const fetchAll = async objUser => {
       include: [
         {
           model: Todo,
-          include: [Tag]
+          as: 'todos',
+          include: [
+            {
+              model: Tag,
+              as: 'tags'
+            }
+          ]
         }
       ]
     });

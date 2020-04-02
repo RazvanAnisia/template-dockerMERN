@@ -48,13 +48,15 @@ module.exports = (sequelize, DataTypes) => {
     const { TodoList, TodoTag, Tag } = models;
 
     Todo.belongsTo(TodoList, {
-      // foreignKey: 'todoListId',
-      // onDelete: 'CASCADE',
-      // onUpdate: 'CASCADE'
+      foreignKey: 'todoListId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+      as: 'todos'
     });
     Todo.belongsToMany(Tag, {
-      through: TodoTag
-      // as: 'Todo'
+      through: TodoTag,
+      foreignKey: 'todoId',
+      as: 'tags'
     });
   };
   return Todo;

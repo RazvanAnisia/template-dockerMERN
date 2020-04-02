@@ -28,7 +28,7 @@ const createOne = async (strTodoListId, objTodoParams) => {
 /**
  * @description Attempt to find the todo for the provided id
  * @param {string} strTodoId todo id
- * @returns {Promise<{success: booletodoListsan, result: *}|{success: boolean, err: Error}>} promise with todo
+ * @returns {Promise<{success: boolean, result: *}|{success: boolean, err: Error}>} promise with todo
  */
 const showOne = async strTodoId => {
   try {
