@@ -22,7 +22,9 @@ exports.createUser = (req, res) => {
           );
         })
         .catch(err => {
-          res.status(HttpStatus.BAD_REQUEST).send({ message: err });
+          res
+            .status(HttpStatus.BAD_REQUEST)
+            .send({ message: err.errors[0].message });
         });
     })
     .catch(err => {

@@ -69,7 +69,7 @@ const updateOne = async (strTodoListName, strTodoListId) => {
 
 /**
  * @param {string} strTodoListId todolist id
- * @returns {object} if the query succedded or not
+ * @returns {object} if the query succeeded or not
  */
 const deleteOne = async strTodoListId => {
   try {

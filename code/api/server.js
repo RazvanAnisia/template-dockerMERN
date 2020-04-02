@@ -2,7 +2,6 @@ const express = require('express');
 
 const cors = require('cors');
 const app = express();
-const sequelize = require('./config/database');
 const http = require('http');
 const socketIo = require('socket.io');
 const axios = require('axios');
@@ -52,8 +51,9 @@ app.use('/signup', signup);
 //     console.log(err);
 //   });
 
-app.listen(process.env.PORT || 9000, () => {
-  console.log(`listening on port ${process.env.PORT}`);
+const PORT = process.env.NODE_ENV === 'test' ? 9001 : process.env.PORT || 9000;
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
 });
 
 const getLeaderboard = async socket => {
@@ -66,16 +66,16 @@ const getLeaderboard = async socket => {
   }
 };
 
-// Socket server
-io.on('connection', socket => {
-  console.log('New client connected');
-  setInterval(() => getLeaderboard(socket), 5000);
-  socket.on('disconnect', () => console.log('Client disconnected'));
-});
+// // Socket server
+// io.on('connection', socket => {
+//   console.log('New client connected');
+//   setInterval(() => getLeaderboard(socket), 5000);
+//   socket.on('disconnect', () => console.log('Client disconnected'));
+// });
 
-server.listen(process.env.SOCKET_PORT, () =>
-  console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`)
-);
+// server.listen(process.env.SOCKET_PORT, () =>
+//   console.log(`Socket server listening on port ${process.env.SOCKET_PORT}`)
+// );
 
 // TODO When an event is completed, it will triggered a completed event, based on the priority and points it had, user will gain points
 // TODO Add Levels for users(create a levels table with some predefined levels and points needed ) and associate each user to one
@@ -86,3 +86,5 @@ server.listen(process.env.SOCKET_PORT, () =>
 // TODO Add validation for all frontend data https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
 // TODO Add support for profile avatars, cloudinary and cdm
 // TODO Add confirmation email with Sendgrid or Mailgun
+
+module.exports = app;
