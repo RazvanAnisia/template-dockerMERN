@@ -52,6 +52,7 @@ app.use('/signup', signup);
 //   });
 
 const PORT = process.env.NODE_ENV === 'test' ? 9001 : process.env.PORT || 9000;
+
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
@@ -82,7 +83,6 @@ const getLeaderboard = async socket => {
 // TODO add cross-orogin CORS headers so only our frontend can access the api
 // TODO Add FAKER library for seeding the db
 // TODO Add migrations
-// TODO Add testing with Jest and Supertest
 // TODO Add validation for all frontend data https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
 // TODO Add support for profile avatars, cloudinary and cdm
 // TODO Add confirmation email with Sendgrid or Mailgun

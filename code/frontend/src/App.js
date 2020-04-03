@@ -73,4 +73,6 @@ class App extends Component {
   }
 }
 
+//TODO Use Yup for client side validation
+
 export default App;

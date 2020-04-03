@@ -1,3 +1,4 @@
+// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../server');
 const truncateDb = require('./truncateDb');
@@ -17,8 +18,7 @@ beforeAll(async done => {
       userName: 'SPider-man'
     })
     .end((_, response) => {
-      token = response.body.token; // save the token!
-      console.log('token', token);
+      token = response.body.token;
       done();
     });
 });
