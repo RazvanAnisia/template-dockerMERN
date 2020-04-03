@@ -1,15 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const TodoListController = require('../controllers/todolist');
+const TodoListController = require('../controllers/TodoListsController');
+const validation = require('../middleware/validation');
+const todoListSchema = require('../schemas/todoListSchema');
 
 router
   .route('/')
   .get(TodoListController.getTodoLists)
-  .post(TodoListController.createTodoList);
+  .post(
+    validation(todoListSchema.create, 'body'),
+    TodoListController.createTodoList
+  );
 
 router
   .route('/:id')
-  .put(TodoListController.updateTodoList)
+  .put(
+    validation(todoListSchema.create, 'body'),
+    TodoListController.updateTodoList
+  )
   .delete(TodoListController.deleteTodoList);
 
 module.exports = router;

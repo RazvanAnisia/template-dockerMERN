@@ -2,6 +2,8 @@
 code/api/node_modules
 code/frontend/node_modules
 code/frontend/build
+code/backend/dist
+
 
 .idea/
 .vscode/

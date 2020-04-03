@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/users');
+const UserController = require('../controllers/UsersController');
 
 router
   .route('/')
   .get(UserController.getUserDetails)
-  .post(UserController.updateUserDetails);
+  .put(UserController.updateUserDetails);
 
 router.route('/stats').get(UserController.getUserStats);
 router.route('/unregister').post(UserController.deleteUserAccount);

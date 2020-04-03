@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize').Sequelize;
-const DataTypes = require('sequelize').DataTypes;
 const sequelize = require('../config/database');
+const DataTypes = require('sequelize').DataTypes;
 
-const TodoList = sequelize.define('todoList', {
+const Tag = sequelize.define('tag', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV1,
@@ -10,9 +10,13 @@ const TodoList = sequelize.define('todoList', {
   },
   name: {
     type: Sequelize.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
+    // TODO Make the name unqiue for the user
+  },
+  color: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 });
 
-module.exports = TodoList;
+module.exports = Tag;
