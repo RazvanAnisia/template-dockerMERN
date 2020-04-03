@@ -4,12 +4,12 @@ const todoListSchemas = {
   create: Joi.object().keys({
     name: Joi.string()
       .required()
-      .max(6)
+      .max(25)
   }),
   update: Joi.object().keys({
-    title: Joi.string()
+    name: Joi.string()
       .required()
-      .max(6)
+      .max(25)
   })
 };
 

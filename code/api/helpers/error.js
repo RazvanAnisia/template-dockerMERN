@@ -11,8 +11,8 @@ const handleError = (intStatusCode, strMessage, res, err) => {
   err && logger.error('ERROR ', err);
   return res.status(intStatusCode).send({
     status: 'error',
-    intStatusCode,
-    strMessage
+    statusCode: intStatusCode,
+    error: strMessage
   });
 };
 

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const TodoListController = require('../controllers/TodoListsController');
 const validation = require('../middleware/validation');
-const todoListSchema = require('../schemas/todoList');
+const todoListSchema = require('../schemas/todoListSchema');
 
 router
   .route('/')
@@ -14,7 +14,10 @@ router
 
 router
   .route('/:id')
-  .put(TodoListController.updateTodoList)
+  .put(
+    validation(todoListSchema.create, 'body'),
+    TodoListController.updateTodoList
+  )
   .delete(TodoListController.deleteTodoList);
 
 module.exports = router;

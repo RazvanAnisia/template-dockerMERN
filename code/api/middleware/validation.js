@@ -1,3 +1,6 @@
+const HttpStatus = require('http-status-codes');
+const handleError = require('../helpers/error');
+
 /**
  * @param {object} objSchema schema to validate against
  * @param {string} strProperty property to validate
@@ -12,9 +15,8 @@ const validationMiddleware = (objSchema, strProperty) => {
       next();
     } else {
       const { details } = error;
-      const message = details.map(i => i.message).join(',');
-      console.log('error', message);
-      res.status(422).json({ error: message });
+      const strError = details.map(i => i.message).join(',');
+      handleError(HttpStatus.UNPROCESSABLE_ENTITY, strError, res);
     }
   };
 };
