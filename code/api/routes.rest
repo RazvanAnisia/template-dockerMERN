@@ -1,0 +1,17 @@
+
+
+# GET http://localhost:9000/todolist HTTP/1.1
+# Authorization: Bearer 
+# ###
+
+POST http://localhost:9000/signup HTTP/1.1
+content-type: application/json
+
+{ 
+	"firstName":"Master2",
+    "lastName":"Spider",
+    "email":"spider27@gmail.com",
+    "password":"lightsaber",
+    "userName":"spiderman27"
+}
+

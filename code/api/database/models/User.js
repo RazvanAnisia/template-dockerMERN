@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      profilePicture: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     },
     {}
@@ -38,7 +42,8 @@ module.exports = (sequelize, DataTypes) => {
     const { TodoList, Tag } = models;
     User.hasMany(TodoList, {
       foreignKey: 'userId',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
+      as: 'todoLists'
     });
     User.hasMany(Tag, {
       foreignKey: 'userId',
