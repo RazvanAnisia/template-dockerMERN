@@ -1,6 +1,6 @@
 FROM node:12-stretch
 
-RUN npm install pm2 -g && npm install nodemon -g
+RUN npm install nodemon -g
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
